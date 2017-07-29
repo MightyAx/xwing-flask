@@ -1,0 +1,19 @@
+{
+  "name": "xwing-flask",
+  "description": "X Wing Tournament Manager (Flask)",
+  "scripts": {
+  },
+  "env": {
+    "FLASK_APP": "hello.py"
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
