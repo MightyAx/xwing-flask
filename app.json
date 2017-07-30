@@ -4,7 +4,6 @@
   "scripts": {
   },
   "env": {
-    "FLASK_APP": "hello.py"
   },
   "formation": {
   },
