@@ -1,14 +1,22 @@
 <!doctype html>
-<title>Hello from X-Wing</title>
+<title>X-Wing Tournament Manager Guest Book</title>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-{% if name %}
   <h1>Hello {{ name }}!</h1>
-{% else %}
-  <form action="{{ url_for('shout_out') }}" method="post" class="add-entry">
+  <h2>Leave Feedback for X-Wing Tournament Manager:</h2>
+  <form action="{{ url_for('post_greeting') }}" method="post" class="add-entry">
     <dl>
-      <dt>Your Name Here:</dt>
-      <dd><input type="text" size="100" name="name"></dd>
-      <dd><input type="submit" value="Greet Me"></dd>
+      <dt>Your Name:</dt>
+      <dd><input type="text" size="30" name="name"></dd>
+      <dt>Your Message:</dt>
+      <dd><input type="text" size="70" name="message"></dd>
+      <dd><input type="submit" value="Leave Feedback"></dd>
     </dl>
   </form>
-{% endif %}
+  {% if messages %}
+	  <h2>Previous Guests</h2>
+	  <ul>
+	  {% for message in messages %}
+		<li>"{{ message.message }}" <strong>{{ message.name }}</strong></li>	
+	  {% endfor %}
+	  </ul>
+  {% endif %}

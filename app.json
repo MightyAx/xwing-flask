@@ -1,6 +1,6 @@
 {
-  "name": "xwing-flask",
-  "description": "X Wing Tournament Manager (Flask)",
+  "name": "X-Wing Tournament Manager",
+  "description": "This app will allow tournament organisers and players to manage their X-Wing Minitures tournaments.",
   "scripts": {
   },
   "env": {
@@ -8,7 +8,9 @@
   "formation": {
   },
   "addons": [
-
+    {
+      "plan": "heroku-redis:hobby-dev"
+    }
   ],
   "buildpacks": [
     {
