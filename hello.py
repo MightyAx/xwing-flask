@@ -4,9 +4,11 @@ app = Flask(__name__)
 
 @app.route('/')
 @app.route('/<username>')
-def hello(username=None):
-    return render_template('hello.html', name=username)
+def hello(username='World'):
+#To-do:get list of greetings from database
+  return render_template('hello.html', name=username)
 
 @app.route('/shoutout', methods=['POST'])
-def shout_out():
+def post_greeting():
+#To-do: Save to database.
   return redirect(url_for('hello', username=request.form['name']))
