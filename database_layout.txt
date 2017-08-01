@@ -1,0 +1,8 @@
+greetings
+	List
+
+incr next_greeting_id
+	String
+
+greeting:[id]
+	{name, message, timestamp}
