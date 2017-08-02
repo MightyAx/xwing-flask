@@ -12,7 +12,7 @@ def hello(username='World'):
   messages = []
   for key in keys:
     messages.append(dict(name = r.hget(key, 'name').decode("utf-8"), message = r.hget(key, 'message').decode("utf-8")))
-  return render_template('hello.html', name = username, messages = messages)
+  return render_template('feedback.html', name = username, messages = messages)
 
 @app.route('/feedback', methods=['POST'])
 def post_greeting():
