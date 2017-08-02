@@ -5,6 +5,10 @@ import os, redis, datetime
 app = Flask(__name__)
 r = redis.from_url(os.environ.get("REDIS_URL"))
 
+@app.route('/')
+def main():
+  return render_template('main.html')
+
 @app.route('/feedback', methods=['GET'])
 @app.route('/feedback/<username>', methods=['GET'])
 def feedback(username='World'):
