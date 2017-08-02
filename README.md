@@ -25,7 +25,7 @@ Future functionality on the wishlist:
 - Round Notifications
 - Army import from xwing-builder
 - Live Score tracking
-- IOS / GooglePlay app (for notifications)
+- iOS / GooglePlay app (for notifications)
 
 Any comments?
-Let me know on twitter: twitter.com/MightyAx
+Let me know on twitter: twitter.com/Mighty_Ax
