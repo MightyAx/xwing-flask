@@ -14,7 +14,7 @@ Hosting is provided by heroku which means:
 - Any feature branch that submits a pull request will have a review app created.
 - A staging environment is created from the master branch here: https://xwing-flask-master.herokuapp.com
 - A production environment will be created once staging has passed cert here: https://xwing.herokuapp.com
-- I'd like to setup TDD but not sure I can get thaat to autorun on heroku without paying for it yet.
+- I'd like to setup TDD but not sure I can get that to autorun on heroku without paying for it yet.
 
 Future functionality on the wishlist:
 - Have players log their own matches
