@@ -6,3 +6,15 @@ incr next_greeting_id
 
 greeting:[id]
 	{name, message, timestamp}
+
+users
+	List
+
+incr next_user_id
+	String
+
+user:[id]
+	{nickname, email, hash}
+
+email:[email]
+	[id]
