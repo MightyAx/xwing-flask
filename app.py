@@ -3,7 +3,7 @@ from flask import render_template, request, redirect, url_for
 import os, redis, datetime, flask_login
 
 app = Flask(__name__)
-app.secret_key = 'super secret string'  # Change this!
+app.secret_key = os.environ.get("SECURE_KEYS")
 r = redis.from_url(os.environ.get("REDIS_URL"))
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
