@@ -1,20 +1,17 @@
 greetings
-	List
+	List "greeting:[id]"
 
 incr next_greeting_id
 	String
 
 greeting:[id]
-	{name, message, timestamp}
-
-users
-	List
+	Hash {name, message, timestamp}
 
 incr next_user_id
 	String
 
-user:[id]
-	{nickname, email, hash}
+users
+	SortedSet [id: email]
 
-email:[email]
-	[id]
+user:[id]`
+	Hash {nickname, email, hash}
