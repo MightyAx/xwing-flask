@@ -3,6 +3,7 @@ from flask import render_template, request, redirect, url_for
 import os, redis, datetime, flask_login
 
 app = Flask(__name__)
+app.secret_key = 'super secret string'  # Change this!
 r = redis.from_url(os.environ.get("REDIS_URL"))
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
@@ -28,31 +29,61 @@ def post_feedback():
   return redirect(url_for('feedback', username=request.form['name']))
 
 class User(flask_login.UserMixin):
-    id = ""
-    nickname = ""
-    email = ""
+    def __init__(self, id, email, nickname, hash):
+        self.id = int(id)
+        self.email = email
+        self.nickname = nickname,
+        self.hash = hash
 
+    @classmethod
+    def get(cls, id):
+        id = int(id)
+        return cls(id, r.hget('user:%s' % id, 'email').decode('utf-8'), r.hget('user:%s' % id, 'nickname'), r.hget('user:%s' % id, 'hash').decode('utf-8'))
+        
 @login_manager.user_loader
-def user_loader(id):
-    if not r.exists('user:%s' % id)
-        return
-    
-    user = User()
-    user.id = id
-    user.nickname = r.hget('user:%s' % id, 'nickname').decode("utf-8")
-    user.email = r.hget('user:%s' % id, 'email').decode("utf-8")
-	user.hash = r.hget('user:%s' % id, 'hash')
-	return user
+def load_user(user_id):
+    return User.get(user_id)
 
 @login_manager.request_loader
 def request_loader(request):
     email = request.form.get('email')
-	if not r.exists('email:%s' % email)
-		return
-	
-	id = r.get('email:%s' % email)
-	user = user_loader(id)
-	
-	#user.is_authenticated = hash(request.form['pw']) == user.hash
-	return user
-	
+    id = int(r.zscore('users', email))
+    if not user.id:
+        return
+    user = User.get(id)
+    user.is_authenticated = user.hash == request.form['pw']
+    return user
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return '''
+               <form action='login' method='POST'>
+                <input type='text' name='email' id='email' placeholder='email'></input>
+                <input type='password' name='pw' id='pw' placeholder='password'></input>
+                <input type='submit' name='submit'></input>
+               </form>
+               '''
+
+    email = request.form['email']
+    id = int(r.zscore('users', email))
+    user = User.get(id)
+    if user and user.hash == request.form['pw']:
+        flask_login.login_user(user)
+        return redirect(url_for('protected'))
+
+    return 'Bad login: id: {}, email: {}, auth: {}, hash: {}, pw: {}'.format(flask_login.current_user.id, flask_login.current_user.email, flask_login.current_user.is_authenticated, r.hget('user:%s' % user.id, 'hash'), request.form['pw'])
+
+@app.route('/protected')
+@flask_login.login_required
+def protected():
+    return 'Logged in as: ' + flask_login.current_user.email
+
+@app.route('/logout')
+def logout():
+    flask_login.logout_user()
+    return 'Logged out'
+    
+#@login_manager.unauthorized_handler
+#def unauthorized_handler():
+#    return 'Unauthorized'
