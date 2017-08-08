@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import render_template, request, redirect, url_for
+from passlib.hash import pbkdf2_sha256 
 import os, redis, datetime, flask_login
 
 app = Flask(__name__)
@@ -62,7 +63,7 @@ def login():
     id = r.zscore('users', email)
     if id:
         user = User.get(id)
-        if user and user.hash == request.form['password']:
+        if pbkdf2_sha256.verify(request.form['password'], user.hash):
             flask_login.login_user(user)
             return redirect(url_for('main'))
     return render_template('login.html', errormessage='Incorrect Email or Password')
