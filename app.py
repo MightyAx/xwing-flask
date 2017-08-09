@@ -4,7 +4,7 @@ from passlib.hash import pbkdf2_sha256
 import os, redis, datetime, flask_login
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECURE_KEYS")
+app.secret_key = os.environ.get("SECURE_KEY")
 r = redis.from_url(os.environ.get("REDIS_URL"))
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
