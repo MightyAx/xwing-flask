@@ -104,3 +104,4 @@ ENV/
 /Include
 /Lib
 /Scripts
+pip-selfcheck.json

@@ -2,7 +2,16 @@
 {% block title %}X-Wing Tournament Manager{% endblock %}
 {% block content %}
   <h1>X-Wing Tournament Manager</h1>
+  {% if user.is_authenticated %}
+  <h2>Hi {{ user.nickname.decode('utf-8') }}!</h2>
+  {% endif %}
   <ul>
-	<li><a href="{{ url_for('feedback') }}">Leave Feedback</a></li>
+	{% if user.is_authenticated %}
+		<li><a href="{{ url_for('logout') }}">Logout</a></li>
+		<li><a href="{{ url_for('feedback', username=user.nickname.decode('utf-8') ) }}">Leave Feedback</a></li>
+	{% else%}
+		<li><a href="{{ url_for('login') }}">Login</a> / <a href="{{ url_for('register') }}">Register</a></li>
+		<li><a href="{{ url_for('feedback') }}">Leave Feedback</a></li>
+	{% endif %}
   </ul>
 {% endblock %}

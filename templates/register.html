@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Register: X-Wing Tournament Manager{% endblock %}
+{% block content %}
+  <h2>Register:</h2>
+  <form action="{{ url_for('register') }}" method="post" class="add-entry">
+    <dl>
+      <dt>Email:</dt>
+      <dd><input type="text" size="70" name="email"></dd>
+	  <dt>Nickname:</dt>
+      <dd><input type="text" size="70" name="nickname"></dd>
+      <dt>Password:</dt>
+      <dd><input type="text" size="70" name="password"></dd>
+      <dd><input type="submit" value="Register"></dd>
+    </dl>
+  </form>
+  {% if errormessage %}
+	  <h2 class="login-error">{{errormessage}}</h2>
+  {% endif %}
+{% endblock %}

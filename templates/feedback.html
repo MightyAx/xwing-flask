@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}X-Wing Tournament Manager Guest Book{% endblock %}
+{% block title %}Guest Book: X-Wing Tournament Manager{% endblock %}
 {% block content %}
   <h1>Hello {{ name }}!</h1>
   <h2>Leave Feedback for X-Wing Tournament Manager:</h2>
@@ -16,7 +16,7 @@
 	  <h2>Previous Guests</h2>
 	  <ul>
 	  {% for message in messages %}
-		<li>"{{ message.message }}" <strong>{{ message.name }}</strong></li>	
+		<li>"{{ message.message.decode("utf-8") }}" <strong>{{ message.name.decode("utf-8") }}</strong></li>	
 	  {% endfor %}
 	  </ul>
   {% endif %}
