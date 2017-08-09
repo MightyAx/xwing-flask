@@ -55,6 +55,29 @@ def request_loader(request):
     user.is_authenticated = user.hash == request.form['pw']
     return user
 
+@app.route('/register', methods=['GET'])
+@app.route('/register/<error>', methods=['GET'])
+def register(error = None):
+    return render_template('register.html', errormessage=error)
+
+@app.route('/register', methods=['POST'])
+def create_user():
+	email = request.form['email']
+	user_id = r.zscore('users', email)
+	if user_id:
+		return redirect(url_for('register', error='Email already registered'))
+	
+	user_id = int(r.incr('next_user_id'))
+	nickname = request.form['nickname']
+	hash = pbkdf2_sha256.encrypt(request.form['password'], rounds=200000, salt_size=16)
+	
+	user = User(user_id, email, nickname, hash)
+	r.hmset('user:%s' % user.id, {'email': user.email, 'nickname': user.nickname, 'hash':user.hash})
+	r.zadd('users',  user.email, user.id)
+  
+	flask_login.login_user(user)
+	return redirect(url_for('main'))	
+
 @app.route('/login', methods=['GET'])
 @app.route('/login/<error>', methods=['GET'])
 def login(error = None):

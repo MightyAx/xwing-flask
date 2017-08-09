@@ -10,7 +10,7 @@
 		<li><a href="{{ url_for('logout') }}">Logout</a></li>
 		<li><a href="{{ url_for('feedback', username=user.nickname[0] ) }}">Leave Feedback</a></li>
 	{% else%}
-		<li><a href="{{ url_for('login') }}">Login</a></li>
+		<li><a href="{{ url_for('login') }}">Login</a> / <a href="{{ url_for('register') }}">Register</a></li>
 		<li><a href="{{ url_for('feedback') }}">Leave Feedback</a></li>
 	{% endif %}
   </ul>
