@@ -55,10 +55,13 @@ def request_loader(request):
     user.is_authenticated = user.hash == request.form['pw']
     return user
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'GET':
-        return render_template('login.html')
+@app.route('/login', methods=['GET'])
+@app.route('/login/<error>', methods=['GET'])
+def login(error = None):
+    return render_template('login.html', errormessage=error)
+
+@app.route('/login', methods=['POST'])
+def check_login():
     email = request.form['email']
     id = r.zscore('users', email)
     if id:
@@ -66,8 +69,8 @@ def login():
         if pbkdf2_sha256.verify(request.form['password'], user.hash):
             flask_login.login_user(user)
             return redirect(url_for('main'))
-    return render_template('login.html', errormessage='Incorrect Email or Password')
-
+    return redirect(url_for('login', error='Incorrect Email or Password'))
+    
 @app.route('/logout')
 def logout():
     flask_login.logout_user()
@@ -75,4 +78,4 @@ def logout():
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    return render_template('login.html', errormessage='Unauthorized')
+    return redirect(url_for('login', error='Unauthorized'))
