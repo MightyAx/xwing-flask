@@ -19,7 +19,7 @@ def feedback(username='World'):
   keys = r.lrange('greetings', 0, -1)
   messages = []
   for key in keys:
-    messages.append(dict(name = r.hget(key, 'name').decode("utf-8"), message = r.hget(key, 'message').decode("utf-8")))
+    messages.append(dict(name = r.hget(key, 'name'), message = r.hget(key, 'message')))
   return render_template('feedback.html', name = username, messages = messages)
 
 @app.route('/feedback', methods=['POST'])
@@ -32,9 +32,9 @@ def post_feedback():
 class User(flask_login.UserMixin):
     def __init__(self, id, email, nickname, hash):
         self.id = int(id)
-        self.email = email.decode('utf-8')
-        self.nickname = nickname.decode('utf-8'),
-        self.hash = hash.decode('utf-8')
+        self.email = email
+        self.nickname = nickname
+        self.hash = hash
 
     @classmethod
     def get(cls, id):

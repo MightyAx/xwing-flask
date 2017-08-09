@@ -3,7 +3,7 @@
 {% block content %}
   <h1>X-Wing Tournament Manager</h1>
   {% if user.is_authenticated %}
-  <h2>Hi {{ user.nickname[0] }}!</h2>
+  <h2>Hi {{ user.nickname.decode('utf-8') }}!</h2>
   {% endif %}
   <ul>
 	{% if user.is_authenticated %}
