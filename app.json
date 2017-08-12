@@ -4,6 +4,7 @@
   "scripts": {
   },
   "env": {
+	"FLASK_APP": "xwing\tournament.py"
   },
   "formation": {
   },
