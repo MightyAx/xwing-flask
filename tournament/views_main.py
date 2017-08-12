@@ -1,51 +1,11 @@
-from flask import Flask
 from flask import render_template, request, redirect, url_for
-from passlib.hash import pbkdf2_sha256 
-import os, redis, datetime, flask_login, re
-
-app = Flask(__name__)
-app.secret_key = os.environ.get("SECURE_KEY")
-r = redis.from_url(os.environ.get("REDIS_URL"))
-login_manager = flask_login.LoginManager()
-login_manager.init_app(app)
+from tournament import app, login_manager, flask_login, r
+from passlib.hash import pbkdf2_sha256
+import re
 
 @app.route('/')
 def main():
   return render_template('main.html', user = flask_login.current_user)
-
-@app.route('/feedback', methods=['GET'])
-@app.route('/feedback/<username>', methods=['GET'])
-def feedback(username='World'):
-  keys = r.lrange('greetings', 0, -1)
-  messages = []
-  for key in keys:
-    messages.append(dict(name = r.hget(key, 'name'), message = r.hget(key, 'message')))
-  return render_template('feedback.html', name = username, messages = messages)
-
-@app.route('/feedback', methods=['POST'])
-def post_feedback():
-  greeting_id = r.incr('next_greeting_id')
-  r.hmset('greeting:%s' % greeting_id, {'name':request.form['name'], 'message':request.form['message'], 'timestamp':datetime.datetime.now()})
-  r.lpush('greetings', 'greeting:%s' % greeting_id)
-  return redirect(url_for('feedback', username=request.form['name']))
-
-class User(flask_login.UserMixin):
-    def __init__(self, id, email, nickname, hash):
-        self.id = int(id)
-        self.email = email.lower()
-        self.nickname = nickname
-        self.hash = hash
-
-    @classmethod
-    def get(cls, id):
-        id = int(id)
-        return cls(id, r.hget('user:%s' % id, 'email'), r.hget('user:%s' % id, 'nickname'), r.hget('user:%s' % id, 'hash'))
-        
-def isValidEmail(email):
- if len(email) > 7:
-    if re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email) != None:
-        return True
- return False
  
 @login_manager.user_loader
 def load_user(user_id):
@@ -116,3 +76,9 @@ def logout():
 @login_manager.unauthorized_handler
 def unauthorized_handler():
     return redirect(url_for('login', error='Unauthorized'))
+
+def isValidEmail(email):
+ if len(email) > 7:
+    if re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email) != None:
+        return True
+ return False
