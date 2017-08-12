@@ -1,1 +1,1 @@
-web: gunicorn xwing\tournament:app
+web: gunicorn tournament:app
