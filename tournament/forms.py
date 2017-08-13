@@ -45,7 +45,6 @@ class CreateTournament(FlaskForm):
     location = StringField('Location', validators=[DataRequired()])
     date = DateField('Date', format='%Y-%m-%d', validators=[DataRequired()])
 
-    @staticmethod
-    def validate_date(field):
+    def validate_date(self, field):
         if field.data < datetime.date.today():
             raise ValidationError('Date must be in the future.')
