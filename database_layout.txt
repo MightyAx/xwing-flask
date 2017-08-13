@@ -1,12 +1,3 @@
-greetings
-	List "greeting:[id]"
-
-incr next_greeting_id
-	String
-
-greeting:[id]
-	Hash {name, message, timestamp}
-
 incr next_user_id
 	String
 
