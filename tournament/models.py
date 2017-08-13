@@ -22,4 +22,4 @@ class User(flask_login.UserMixin):
 
     @classmethod
     def exists(cls, email):
-        return r.zscore('users', email)
+        return r.zscore('users', email.lower())
