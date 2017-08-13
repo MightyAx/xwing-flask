@@ -1,3 +1,5 @@
+from passlib.handlers.pbkdf2 import pbkdf2_sha256
+
 from tournament import flask_login, r
 
 
@@ -23,3 +25,13 @@ class User(flask_login.UserMixin):
     @classmethod
     def exists(cls, email):
         return r.zscore('users', email.lower())
+
+    @classmethod
+    def create(cls, email, nickname, password):
+        user_id = int(r.incr('next_user_id'))
+        pw_hash = pbkdf2_sha256.encrypt(password, rounds=200000, salt_size=16)
+
+        user = User(user_id, email.lower(), nickname, pw_hash)
+        r.hmset('user:%s' % user.UserId, {'email': user.Email, 'nickname': user.Nickname, 'hash': user.Hash})
+        r.zadd('users', user.Email, user.UserId)
+        return user

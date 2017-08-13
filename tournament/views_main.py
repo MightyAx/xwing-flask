@@ -21,12 +21,7 @@ def register():
     form = Register(request.form)
     if request.method == 'POST':
         if form.validate():
-            user_id = int(r.incr('next_user_id'))
-            pw_hash = pbkdf2_sha256.encrypt(form.password.data, rounds=200000, salt_size=16)
-
-            user = User(user_id, form.email.data, form.name.data, pw_hash)
-            r.hmset('user:%s' % user.UserId, {'email': user.Email, 'nickname': user.Nickname, 'hash': user.Hash})
-            r.zadd('users', user.Email, user.UserId)
+            user = User.create(form.email.data, form.name.data, form.password.data)
 
             flask_login.login_user(user)
             flash('Registration Successful')
