@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Tournament List: X-Wing Tournament Manager{% endblock %}
+{% block content %}
+  {% if my_tournaments %}
+    <h2>My Tournaments:</h2>
+    <ul>
+      {% for tournament in my_tournaments %}
+      <li><strong><a href="{{ url_for('tournament_detail', tournament_id=tournament.TournamentId) }}">{{ tournament.Name.decode('utf-8') }}</a></strong> @ {{ tournament.Location.decode('utf-8') }} @ {{ tournament.Date.decode('utf-8') }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% if all_tournaments %}
+  <h2>All Tournaments:</h2>
+  <ul>
+    {% for tournament in all_tournaments %}
+      <li><strong><a href="{{ url_for('tournament_detail', tournament_id=tournament.TournamentId) }}">{{ tournament.Name.decode('utf-8') }}</a></strong> @ {{ tournament.Location.decode('utf-8') }} @ {{ tournament.Date.decode('utf-8') }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+{% endblock %}
