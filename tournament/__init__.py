@@ -1,6 +1,8 @@
-from flask import Flask
+import flask_login
+import os
+import redis
 
-import os, redis, flask_login
+from flask import Flask
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECURE_KEY")
