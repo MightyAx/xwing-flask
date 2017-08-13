@@ -3,17 +3,23 @@
 {% block content %}
   <h2>Register:</h2>
   <form action="{{ url_for('register') }}" method="post" class="add-entry">
+    {{ form.hidden_tag() }}
     <dl>
-      <dt>Email:</dt>
-      <dd><input type="text" size="70" name="email"></dd>
-	  <dt>Nickname:</dt>
-      <dd><input type="text" size="70" name="nickname"></dd>
-      <dt>Password:</dt>
-      <dd><input type="text" size="70" name="password"></dd>
-      <dd><input type="submit" value="Register"></dd>
+      <dt>{{ form.email.label }}</dt>
+      <dd>{{ form.email }}</dd>
+	  <dt>{{ form.name.label }}</dt>
+      <dd>{{ form.name }}</dd>
+      <dt>{{ form.password.label }}</dt>
+      <dd>{{ form.password }}</dd>
+      <dd>{{ form.submit }}</dd>
     </dl>
   </form>
-  {% if errormessage %}
-	  <h2 class="login-error">{{errormessage}}</h2>
+  {% if form.errors %}
+	  <p class="error">Registration Errors</p>
+	  <ul>
+	  {% for error in form.errors %}
+        <li><strong>{{ error }}</strong>{{ form.errors[error] }}</li>
+	  {% endfor %}
+	  </ul>
   {% endif %}
 {% endblock %}
