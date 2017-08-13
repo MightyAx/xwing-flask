@@ -15,22 +15,6 @@ def load_user(user_id):
     return User.get(user_id)
 
 
-@login_manager.request_loader
-def request_loader(login_request):
-    email = login_request.form.get('email')
-    if not email:
-        return
-
-    email = email.lower()
-    user_id = User.exists(email)
-
-    if not user_id:
-        return
-    user = User.get(user_id)
-    user.is_authenticated = user.hash == login_request.form['pw']
-    return user
-
-
 @app.route('/register', methods=['GET'])
 @app.route('/register/<error>', methods=['GET'])
 def register(error=None):
