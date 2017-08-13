@@ -2,7 +2,19 @@ incr next_user_id
 	String
 
 users
-	SortedSet [id: email]
+	SortedSet [user_id: email]
 
-user:[id]`
+user:[user_id]
 	Hash {nickname, email, hash}
+
+incr next_tournament_id
+    String
+
+tournaments
+    SortedSet [days-since-2017: tournament_id]
+
+tournament:[tournament_id]
+    Hash {name, location, admin_id, date}
+
+user:[user_id]:tournaments
+    SortedSet [days-since-2017: tournament_id]

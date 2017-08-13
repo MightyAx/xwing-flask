@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Tournament: X-Wing Tournament Manager{% endblock %}
+{% block content %}
+  {% if form and not tournament %}
+    <h2>Create Tournament</h2>
+    {% from "_formhelpers.html" import render_field %}
+    <form action="{{ url_for('create_tournament') }}" method="post" class="add-entry">
+      {{ form.csrf_token }}
+      <dl>
+        {{ render_field(form.name) }}
+        {{ render_field(form.location) }}
+        {{ render_field(form.date) }}
+      </dl>
+      <p><input type=submit value='Create Tournament'></p>
+    </form>
+  {% endif %}
+  {% if tournament %}
+    <h2>{{ tournament.Name.decode('utf-8')}}</h2>
+    <div>{{ tournament.Location.decode('utf-8') }}</div>
+    <div>{{ tournament.Date.decode('utf-8') }}</div>
+  {% endif %}
+{% endblock %}

@@ -1,9 +1,9 @@
 from flask import render_template, request, redirect, url_for, flash
-
-from tournament import app, login_manager, flask_login, r
 from passlib.hash import pbkdf2_sha256
-from tournament.models import User
+
+from tournament import app, login_manager, flask_login
 from tournament.forms import Register, Login
+from tournament.models import User
 
 
 @app.route('/')
