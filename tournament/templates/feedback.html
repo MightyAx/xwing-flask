@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Guest Book: X-Wing Tournament Manager{% endblock %}
 {% block content %}
-  <h1>Hello {{ name }}!</h1>
   <h2>Leave Feedback for X-Wing Tournament Manager:</h2>
   <form action="{{ url_for('post_feedback') }}" method="post" class="add-entry">
     <dl>
