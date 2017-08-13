@@ -3,7 +3,7 @@ from flask import render_template, request, redirect, url_for, flash
 from tournament import app, login_manager, flask_login, r
 from passlib.hash import pbkdf2_sha256
 from tournament.models import User
-from tournament.forms import Register
+from tournament.forms import Register, Login
 
 
 @app.route('/')
@@ -18,39 +18,37 @@ def load_user(user_id):
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = Register()
-    if form.validate_on_submit():
-        user_id = int(r.incr('next_user_id'))
-        pw_hash = pbkdf2_sha256.encrypt(form.password.data, rounds=200000, salt_size=16)
+    form = Register(request.form)
+    if request.method == 'POST':
+        if form.validate():
+            user_id = int(r.incr('next_user_id'))
+            pw_hash = pbkdf2_sha256.encrypt(form.password.data, rounds=200000, salt_size=16)
 
-        user = User(user_id, form.email.data, form.name.data, pw_hash)
-        r.hmset('user:%s' % user.UserId, {'email': user.Email, 'nickname': user.Nickname, 'hash': user.Hash})
-        r.zadd('users', user.Email, user.UserId)
+            user = User(user_id, form.email.data, form.name.data, pw_hash)
+            r.hmset('user:%s' % user.UserId, {'email': user.Email, 'nickname': user.Nickname, 'hash': user.Hash})
+            r.zadd('users', user.Email, user.UserId)
 
-        flask_login.login_user(user)
-        flash('Registration Sucessful')
-        return redirect(url_for('main'))
-    else:
-        flash('Registration Failure')
-    return render_template('register.html', form = form)
-
-
-@app.route('/login', methods=['GET'])
-@app.route('/login/<error>', methods=['GET'])
-def login(error=None):
-    return render_template('login.html', errormessage=error)
-
-
-@app.route('/login', methods=['POST'])
-def check_login():
-    email = request.form['email'].lower()
-    user_id = User.exists(email)
-    if user_id:
-        user = User.get(user_id)
-        if pbkdf2_sha256.verify(request.form['password'], user.Hash):
             flask_login.login_user(user)
+            flash('Registration Successful')
             return redirect(url_for('main'))
-    return redirect(url_for('login', error='Incorrect Email or Password'))
+        else:
+            flash('Registration Failure')
+    return render_template('register.html', form=form)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = Login(request.form)
+    if request.method == 'POST' and form.validate_on_submit():
+        user_id = User.exists(form.email.data)
+        if user_id:
+            user = User.get(user_id)
+            if pbkdf2_sha256.verify(form.password.data, user.Hash):
+                flask_login.login_user(user)
+                flash('Login Successful')
+                return redirect(url_for('main'))
+        flash('Incorrect Email or Password')
+    return render_template('login.html', form=form)
 
 
 @app.route('/logout')
@@ -61,4 +59,5 @@ def logout():
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    return redirect(url_for('login', error='Unauthorized'))
+    flash('Unauthorized')
+    return redirect(url_for('main'))

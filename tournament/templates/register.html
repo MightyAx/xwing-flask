@@ -2,24 +2,14 @@
 {% block title %}Register: X-Wing Tournament Manager{% endblock %}
 {% block content %}
   <h2>Register:</h2>
+  {% from "_formhelpers.html" import render_field %}
   <form action="{{ url_for('register') }}" method="post" class="add-entry">
-    {{ form.hidden_tag() }}
+    {{ form.csrf_token }}
     <dl>
-      <dt>{{ form.email.label }}</dt>
-      <dd>{{ form.email }}</dd>
-	  <dt>{{ form.name.label }}</dt>
-      <dd>{{ form.name }}</dd>
-      <dt>{{ form.password.label }}</dt>
-      <dd>{{ form.password }}</dd>
-      <dd>{{ form.submit }}</dd>
+      {{ render_field(form.email) }}
+      {{ render_field(form.name) }}
+      {{ render_field(form.password) }}
     </dl>
+    <p><input type=submit value='Register'></p>
   </form>
-  {% if form.errors %}
-	  <p class="error">Registration Errors</p>
-	  <ul>
-	  {% for error in form.errors %}
-        <li><strong>{{ error }}</strong>{{ form.errors[error] }}</li>
-	  {% endfor %}
-	  </ul>
-  {% endif %}
 {% endblock %}

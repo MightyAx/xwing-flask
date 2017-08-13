@@ -18,4 +18,4 @@ def post_feedback():
     r.hmset('greeting:%s' % greeting_id,
             {'name': request.form['name'], 'message': request.form['message'], 'timestamp': datetime.datetime.now()})
     r.lpush('greetings', 'greeting:%s' % greeting_id)
-    return redirect(url_for('feedback', username=request.form['name']))
+    return redirect(url_for('feedback'))

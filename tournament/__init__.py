@@ -10,4 +10,5 @@ r = redis.from_url(os.environ.get("REDIS_URL"))
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
+# noinspection PyPep8
 import tournament.models, tournament.views_main, tournament.views_feedback

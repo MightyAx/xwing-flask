@@ -2,16 +2,13 @@
 {% block title %}Login: X-Wing Tournament Manager{% endblock %}
 {% block content %}
   <h2>Login:</h2>
-  <form action="{{ url_for('check_login') }}" method="post" class="add-entry">
-    <dl>
-      <dt>Email:</dt>
-      <dd><input type="text" size="70" name="email"></dd>
-      <dt>Password:</dt>
-      <dd><input type="text" size="70" name="password"></dd>
-      <dd><input type="submit" value="Login"></dd>
+  {% from "_formhelpers.html" import render_field %}
+  <form method="POST" action="{{ url_for('login') }}" class="add-entry">
+    {{ form.csrf_token }}
+      <dl>
+      {{ render_field(form.email) }}
+      {{ render_field(form.password) }}
     </dl>
+    <p><input type=submit value='Login'></p>
   </form>
-  {% if errormessage %}
-	  <h2 class="login-error">{{ errormessage }}</h2>
-  {% endif %}
 {% endblock %}
