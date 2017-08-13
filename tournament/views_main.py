@@ -17,23 +17,6 @@ def load_user(user_id):
     return User.get(user_id)
 
 
-@login_manager.request_loader
-def request_loader(login_request):
-    return
-    # email = login_request.form.get('email')
-    # if not email:
-    #     return
-    #
-    # email = email.lower()
-    # user_id = User.exists(email)
-    #
-    # if not user_id:
-    #     return
-    # user = User.get(user_id)
-    # user.is_authenticated = pbkdf2_sha256.verify(login_request.form['password'], user.Hash)
-    # return user
-
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = Register()
