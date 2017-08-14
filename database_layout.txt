@@ -23,3 +23,19 @@ Member: {name, location, admin_id, date}
 Type:   SortedSet
 Key:    user:[user_id]:tournaments
 Member: [days-since-2017: tournament_id]
+
+Type:   Hash
+Key:    player:[player_id]
+Member: {name, faction, group}
+
+Type:   Set
+Key:    tournament:[tournament_id]:players
+Member: [player_id]
+
+Type:   Set
+Key:    tournament:[tournament_id]:player_groups
+Member: [group_name]
+
+Type:   Set
+Key:    tournament:[tournament_id]:player_group:[group_name]
+Member: [player_id]
