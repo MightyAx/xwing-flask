@@ -20,9 +20,9 @@ class User(flask_login.UserMixin):
     def get(cls, user_id):
         user_id = int(user_id)
         return cls(user_id,
-                   r.hget('user:{}'.format(user_id), 'email'),
-                   r.hget('user:{}'.format(user_id), 'nickname'),
-                   r.hget('user:{}'.format(user_id), 'hash')
+                   email=r.hget('user:{}'.format(user_id), 'email'),
+                   nickname=r.hget('user:{}'.format(user_id), 'nickname'),
+                   pw_hash=r.hget('user:{}'.format(user_id), 'hash')
                    )
 
     @classmethod
@@ -51,10 +51,10 @@ class Tournament:
     def get(cls, tournament_id):
         tournament_id = int(tournament_id)
         return cls(tournament_id,
-                   r.hget('tournament:{}'.format(tournament_id), 'name'),
-                   r.hget('tournament:{}'.format(tournament_id), 'location'),
-                   r.hget('tournament:{}'.format(tournament_id), 'admin_id'),
-                   r.hget('tournament:{}'.format(tournament_id), 'date')
+                   name=r.hget('tournament:{}'.format(tournament_id), 'name'),
+                   location=r.hget('tournament:{}'.format(tournament_id), 'location'),
+                   admin_id=r.hget('tournament:{}'.format(tournament_id), 'admin_id'),
+                   date=r.hget('tournament:{}'.format(tournament_id), 'date')
                    )
 
     @classmethod
