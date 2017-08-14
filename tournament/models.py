@@ -47,6 +47,47 @@ class Tournament:
         self.AdminId = int(admin_id)
         self.Date = date
 
+    def add_player(self, player_id):
+        player_id = int(player_id)
+        player = Player.get(player_id)
+        r.sadd('tournament:{}:players'.format(self.TournamentId), player.PlayerId)
+        if player.Group:
+            r.sadd('tournament:{}:player_groups'.format(self.TournamentId), player.Group)
+            r.sadd('tournament:{}:player_group:{}'.format(self.TournamentId, player.Group), player.PlayerId)
+
+    def remove_player(self, player_id):
+        player_id = int(player_id)
+        player = Player.get(player_id)
+        r.srem('tournament:{}:players'.format(self.TournamentId), player.PlayerId)
+        if player.Group:
+            r.srem('tournament:{}:player_groups'.format(self.TournamentId), player.Group)
+            r.srem('tournament:{}:player_group:{}'.format(self.TournamentId, player.Group), player.PlayerId)
+
+    def list_players(self, group=None):
+        players = []
+        if group:
+            player_ids = r.smembers('tournament:{}:player_group:{}'.format(self.TournamentId, group))
+        else:
+            player_ids = r.smembers('tournament:{}:players'.format(self.TournamentId))
+        for player_id in player_ids:
+            player_id = int(player_id)
+            players.append(Player.get(player_id))
+        return players
+
+    def dict_players_by_group(self):
+        players = {}
+        groups = r.smembers('tournament:{}:player_groups'.format(self.TournamentId))
+        group_keys = ['tournament:{}:players'.format(self.TournamentId)]
+        for group in groups:
+            group_keys.append('tournament:{}:player_group:{}'.format(self.TournamentId, group))
+            players[group] = self.list_players(group)
+        player_ids = r.sdiff(group_keys)
+        players['independent'] = []
+        for player_id in player_ids:
+            player_id = int(player_id)
+            players['independent'].append(Player.get(player_id))
+        return players
+
     @classmethod
     def get(cls, tournament_id):
         tournament_id = int(tournament_id)
@@ -113,10 +154,11 @@ class Player:
 
     @classmethod
     def create(cls, name, faction, group):
-        player = Player(int(r.incr('next_player_id')),name, faction, group)
+        player = Player(int(r.incr('next_player_id')), name, faction, group)
         r.hmset('player:{}'.format(player.PlayerId),
                 {
                     'name': player.Name,
                     'faction': player.Faction,
                     'group': player.Group
                 })
+        return player
