@@ -20,9 +20,9 @@ class User(flask_login.UserMixin):
     def get(cls, user_id):
         user_id = int(user_id)
         return cls(user_id,
-                   r.hget('user:%s' % user_id, 'email'),
-                   r.hget('user:%s' % user_id, 'nickname'),
-                   r.hget('user:%s' % user_id, 'hash')
+                   r.hget('user:{}'.format(user_id), 'email'),
+                   r.hget('user:{}'.format(user_id), 'nickname'),
+                   r.hget('user:{}'.format(user_id), 'hash')
                    )
 
     @classmethod
@@ -34,7 +34,7 @@ class User(flask_login.UserMixin):
         pw_hash = pbkdf2_sha256.encrypt(password, rounds=200000, salt_size=16)
 
         user = User(int(r.incr('next_user_id')), email.lower(), nickname, pw_hash)
-        r.hmset('user:%s' % user.UserId, {'email': user.Email, 'nickname': user.Nickname, 'hash': user.Hash})
+        r.hmset('user:{}'.format(user.UserId), {'email': user.Email, 'nickname': user.Nickname, 'hash': user.Hash})
         r.zadd('users', user.Email, user.UserId)
         return user
 
@@ -51,16 +51,16 @@ class Tournament:
     def get(cls, tournament_id):
         tournament_id = int(tournament_id)
         return cls(tournament_id,
-                   r.hget('tournament:%s' % tournament_id, 'name'),
-                   r.hget('tournament:%s' % tournament_id, 'location'),
-                   r.hget('tournament:%s' % tournament_id, 'admin_id'),
-                   r.hget('tournament:%s' % tournament_id, 'date')
+                   r.hget('tournament:{}'.format(tournament_id), 'name'),
+                   r.hget('tournament:{}'.format(tournament_id), 'location'),
+                   r.hget('tournament:{}'.format(tournament_id), 'admin_id'),
+                   r.hget('tournament:{}'.format(tournament_id), 'date')
                    )
 
     @classmethod
     def create(cls, name, location, admin_id, date):
         tournament = Tournament(int(r.incr('next_tournament_id')), name, location, admin_id, date)
-        r.hmset('tournament:%s' % tournament.TournamentId,
+        r.hmset('tournament:{}'.format(tournament.TournamentId),
                 {
                     'name': tournament.Name,
                     'location': tournament.Location,
@@ -69,7 +69,7 @@ class Tournament:
                 })
         score = date - datetime.date(2017, 1, 1)
         r.zadd('tournaments', tournament.TournamentId, score.days)
-        r.zadd('user:%s:tournaments' % tournament.AdminId, tournament.TournamentId, score.days)
+        r.zadd('user:{}:tournaments'.format(tournament.AdminId), tournament.TournamentId, score.days)
         return tournament
 
     @classmethod
@@ -90,6 +90,6 @@ class Tournament:
         min_score = score.days
         max_score = inf
         tournaments = []
-        for tournament_id in r.zrangebyscore('user:%s:tournaments' % admin_id, min_score, max_score):
+        for tournament_id in r.zrangebyscore('user:{}:tournaments'.format(admin_id), min_score, max_score):
             tournaments.append(Tournament.get(tournament_id))
         return tournaments
