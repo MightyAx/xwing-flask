@@ -93,3 +93,30 @@ class Tournament:
         for tournament_id in r.zrangebyscore('user:{}:tournaments'.format(admin_id), min_score, max_score):
             tournaments.append(Tournament.get(tournament_id))
         return tournaments
+
+
+class Player:
+    def __init__(self, player_id, name, faction, group):
+        self.PlayerId = int(player_id)
+        self.Name = name
+        self.Faction = faction
+        self.Group = group
+
+    @classmethod
+    def get(cls, player_id):
+        player_id = int(player_id)
+        return cls(player_id,
+                   name=r.hget('player:{}'.format(player_id), 'name'),
+                   faction=r.hget('player:{}'.format(player_id), 'faction'),
+                   group=r.hget('player:{}'.format(player_id), 'group')
+                   )
+
+    @classmethod
+    def create(cls, name, faction, group):
+        player = Player(int(r.incr('next_player_id')),name, faction, group)
+        r.hmset('player:{}'.format(player.PlayerId),
+                {
+                    'name': player.Name,
+                    'faction': player.Faction,
+                    'group': player.Group
+                })

@@ -24,6 +24,9 @@ Type:   SortedSet
 Key:    user:[user_id]:tournaments
 Member: [days-since-2017: tournament_id]
 
+Type:   incr:String
+Key:    next_player_id
+
 Type:   Hash
 Key:    player:[player_id]
 Member: {name, faction, group}
