@@ -31,9 +31,9 @@ Type:   Hash
 Key:    player:[player_id]
 Member: {name, faction, group}
 
-Type:   Set
+Type:   SortedSet
 Key:    tournament:[tournament_id]:players
-Member: [player_id]
+Member: [score: player_id]
 
 Type:   Set
 Key:    tournament:[tournament_id]:player_groups
