@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Tournament: X-Wing Tournament Manager{% endblock %}
 {% block content %}
-  {% if form and not tournament %}
+  {% if not tournament %}
     <h2>Create Tournament</h2>
     {% from "_formhelpers.html" import render_field %}
     <form action="{{ url_for('create_tournament') }}" method="post" class="add-entry">
@@ -13,10 +13,13 @@
       </dl>
       <p><input type=submit value='Create Tournament'></p>
     </form>
-  {% endif %}
-  {% if tournament %}
+  {% else %}
     <h2>{{ tournament.Name.decode('utf-8')}}</h2>
     <div>{{ tournament.Location.decode('utf-8') }}</div>
     <div>{{ tournament.Date.decode('utf-8') }}</div>
+    <h2>Players:</h2>
+    <h3>Group</h3>
+    <h3>Add Players</h3>
+    <h3>Create Players</h3>
   {% endif %}
 {% endblock %}
