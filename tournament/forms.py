@@ -58,3 +58,6 @@ class CreatePlayer(FlaskForm):
                                    ('scum', 'Scum & Villainy')]
                           )
     group = StringField('Group')
+
+class AddPlayer(FlaskForm):
+    player = SelectField('Player To Add', coerce=int)

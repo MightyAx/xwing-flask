@@ -5,29 +5,39 @@
     <h2>Create Tournament</h2>
     {% from "_formhelpers.html" import render_field %}
     <form action="{{ url_for('create_tournament') }}" method="post" class="add-entry">
-      {{ form.csrf_token }}
+      {{ t_form.csrf_token }}
       <dl>
-        {{ render_field(form.name) }}
-        {{ render_field(form.location) }}
-        {{ render_field(form.date) }}
+        {{ render_field(t_form.name) }}
+        {{ render_field(t_form.location) }}
+        {{ render_field(t_form.date) }}
       </dl>
       <p><input type=submit value='Create Tournament'></p>
     </form>
   {% else %}
-    <h2>{{ tournament.Name.decode('utf-8')}}</h2>
+    <h2>{{ tournament.Name.decode('utf-8') }}</h2>
     <div>{{ tournament.Location.decode('utf-8') }}</div>
     <div>{{ tournament.Date.decode('utf-8') }}</div>
+    {% if tournament_players %}
     <h2>Players:</h2>
-    <h3>Group</h3>
-    <h3>Add Players</h3>
-    <h3>Create Players</h3>
+    <ul>
+      {% for player in tournament_players %}
+        <li><strong>{{ player.Name.decode('utf-8') }}</strong> {{ player.Faction.decode('utf-8') }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <h2>Add Player</h2>
+      <form action="{{ url_for('tournament_detail', tournament_id=tournament.TournamentId) }}" method="post" class="add-entry">
+        {{ a_form.csrf_token }}
+        <div>{{ a_form.player }} <input type=submit value='Add Player'></div>
+      </form>
+    <h2>Create Player</h2>
     {% from "_formhelpers.html" import render_field %}
     <form action="{{ url_for('tournament_detail', tournament_id=tournament.TournamentId) }}" method="post" class="add-entry">
-      {{ form.csrf_token }}
+      {{ c_form.csrf_token }}
       <dl>
-        {{ render_field(form.name) }}
-        {{ render_field(form.faction) }}
-        {{ render_field(form.group) }}
+        {{ render_field(c_form.name) }}
+        {{ render_field(c_form.faction) }}
+        {{ render_field(c_form.group) }}
       </dl>
       <p><input type=submit value='Create Player'></p>
     </form>

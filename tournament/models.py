@@ -50,7 +50,7 @@ class Tournament:
     def add_player(self, player_id):
         player_id = int(player_id)
         player = Player.get(player_id)
-        r.zadd('tournament:{}:players'.format(self.TournamentId), player.PlayerId, 0)
+        r.sadd('tournament:{}:players'.format(self.TournamentId), player.PlayerId)
         if player.Group:
             r.sadd('tournament:{}:player_groups'.format(self.TournamentId), player.Group)
             r.sadd('tournament:{}:player_group:{}'.format(self.TournamentId, player.Group), player.PlayerId)
@@ -58,7 +58,7 @@ class Tournament:
     def remove_player(self, player_id):
         player_id = int(player_id)
         player = Player.get(player_id)
-        r.zrem('tournament:{}:players'.format(self.TournamentId), player.PlayerId)
+        r.srem('tournament:{}:players'.format(self.TournamentId), player.PlayerId)
         if player.Group:
             r.srem('tournament:{}:player_groups'.format(self.TournamentId), player.Group)
             r.srem('tournament:{}:player_group:{}'.format(self.TournamentId, player.Group), player.PlayerId)
