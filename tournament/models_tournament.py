@@ -1,42 +1,8 @@
+import datetime
 from math import inf
 
-from passlib.handlers.pbkdf2 import pbkdf2_sha256
-import datetime
-
-from tournament import flask_login, r
-
-
-class User(flask_login.UserMixin):
-    def __init__(self, user_id, email, nickname, pw_hash):
-        self.UserId = int(user_id)
-        self.Email = email.lower()
-        self.Nickname = nickname
-        self.Hash = pw_hash
-
-    def get_id(self):
-        return self.UserId
-
-    @classmethod
-    def get(cls, user_id):
-        user_id = int(user_id)
-        return cls(user_id,
-                   email=r.hget('user:{}'.format(user_id), 'email'),
-                   nickname=r.hget('user:{}'.format(user_id), 'nickname'),
-                   pw_hash=r.hget('user:{}'.format(user_id), 'hash')
-                   )
-
-    @classmethod
-    def exists(cls, email):
-        return r.zscore('users', email.lower())
-
-    @classmethod
-    def create(cls, email, nickname, password):
-        pw_hash = pbkdf2_sha256.encrypt(password, rounds=200000, salt_size=16)
-
-        user = User(int(r.incr('next_user_id')), email.lower(), nickname, pw_hash)
-        r.hmset('user:{}'.format(user.UserId), {'email': user.Email, 'nickname': user.Nickname, 'hash': user.Hash})
-        r.zadd('users', user.Email, user.UserId)
-        return user
+from tournament.models_player import Player
+from tournament import r
 
 
 class Tournament:
@@ -137,43 +103,3 @@ class Tournament:
         for tournament_id in r.zrangebyscore('user:{}:tournaments'.format(admin_id), min_score, max_score):
             tournaments.append(Tournament.get(tournament_id))
         return tournaments
-
-
-class Player:
-    def __init__(self, player_id, name, faction, group):
-        self.PlayerId = int(player_id)
-        self.Name = name
-        self.Faction = faction
-        self.Group = group
-
-    @classmethod
-    def get(cls, player_id):
-        player_id = int(player_id)
-        return cls(player_id,
-                   name=r.hget('player:{}'.format(player_id), 'name'),
-                   faction=r.hget('player:{}'.format(player_id), 'faction'),
-                   group=r.hget('player:{}'.format(player_id), 'group')
-                   )
-
-    @classmethod
-    def create(cls, name, faction, group):
-        player = Player(int(r.incr('next_player_id')), name, faction, group)
-        r.hmset('player:{}'.format(player.PlayerId),
-                {
-                    'name': player.Name,
-                    'faction': player.Faction,
-                    'group': player.Group
-                })
-        r.sadd('players', player.PlayerId)
-        return player
-
-    @classmethod
-    def list_players(cls, except_tournament_id=None):
-        players = []
-        if except_tournament_id:
-            players_ids = r.sdiff('players', 'tournament:{}:players'.format(except_tournament_id))
-        else:
-            players_ids = r.smembers('players')
-        for player_id in players_ids:
-            players.append(Player.get(player_id))
-        return players

@@ -3,7 +3,8 @@ from flask_login import login_required
 
 from tournament import app, flask_login
 from tournament.forms import CreateTournament, CreatePlayer, AddPlayer
-from tournament.models import Tournament, Player
+from tournament.models_player import Player
+from tournament.models_tournament import Tournament
 
 
 @app.route('/tournaments')
@@ -46,6 +47,5 @@ def tournament_detail(tournament_id=None):
         add_form = AddPlayer(request.form)
         players = tournament.list_players()
         add_form.player.choices = [('{}'.format(p.PlayerId), p.Name.decode('utf-8')) for p in Player.list_players(tournament.TournamentId)]
-        flash(add_form.player.choices)
         return render_template('tournament.html', tournament=tournament, c_form=create_form, a_form=add_form, tournament_players=players)
     return redirect(url_for('create_tournament'))

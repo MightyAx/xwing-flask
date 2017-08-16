@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Regexp, ValidationError
-from tournament.models import User
+from tournament.models_user import User
 
 
 class EmailUnregistered(object):
