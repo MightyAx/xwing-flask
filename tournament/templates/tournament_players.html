@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Tournament: X-Wing Tournament Manager{% endblock %}
+{% block content %}
+  {% if tournament %}
+    {% if add_form.player.choices %}
+    <h2>Add Player</h2>
+      <form action="{{ url_for('tournament_players', tournament_id=tournament.TournamentId) }}" method="post" class="add-entry">
+        {{ add_form.csrf_token }}
+        <div>{{ add_form.player }} {{ add_form.submit }}</div>
+      </form>
+    {% endif %}
+    <h2>Create Player</h2>
+    {% from "_formhelpers.html" import render_field %}
+    <form action="{{ url_for('tournament_players', tournament_id=tournament.TournamentId) }}" method="post" class="add-entry">
+      {{ create_form.csrf_token }}
+      <dl>
+        {{ render_field(create_form.name) }}
+        {{ render_field(create_form.faction) }}
+        {{ render_field(create_form.group) }}
+      </dl>
+      <p>{{ create_form.submit }}</p>
+    </form>
+  {% endif %}
+{% endblock %}

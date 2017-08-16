@@ -36,16 +36,32 @@ def create_tournament():
 def tournament_detail(tournament_id=None):
     if tournament_id:
         tournament=Tournament.get(int(tournament_id))
+        players = tournament.list_players()
+        return render_template('tournament.html', tournament=tournament, tournament_players=players)
+    return redirect(url_for('create_tournament'))
+
+@app.route('/tournament/<tournament_id>/players', methods=['GET', 'POST'])
+def tournament_players(tournament_id=None):
+    if tournament_id:
+        tournament = Tournament.get(int(tournament_id))
         create_form = CreatePlayer(request.form)
         if create_form.validate_on_submit():
             new_player = Player.create(create_form.name.data, create_form.faction.data, create_form.group.data)
             flash('{} Created'.format(new_player.Name))
             tournament.add_player(new_player.PlayerId)
             flash('{} Added'.format(new_player.Name))
-            return redirect(url_for('tournament_detail', tournament_id=tournament_id))
+            return redirect(url_for('tournament_detail', tournament_id=tournament.TournamentId))
 
         add_form = AddPlayer(request.form)
-        players = tournament.list_players()
-        add_form.player.choices = [('{}'.format(p.PlayerId), p.Name.decode('utf-8')) for p in Player.list_players(tournament.TournamentId)]
-        return render_template('tournament.html', tournament=tournament, c_form=create_form, a_form=add_form, tournament_players=players)
+        add_form.player.choices = [(p.PlayerId, p.Name.decode('utf-8')) for p in
+                                   Player.list_players(tournament.TournamentId)]
+        if add_form.is_submitted():
+            tournament.add_player(int(add_form.player.data))
+            flash('{} Added'.format(dict(add_form.player.choices).get(int(add_form.player.data))))
+            return redirect(url_for('tournament_players', tournament_id=tournament.TournamentId))
+
+        return render_template('tournament_players.html',
+                               tournament=tournament,
+                               create_form=create_form,
+                               add_form=add_form)
     return redirect(url_for('create_tournament'))

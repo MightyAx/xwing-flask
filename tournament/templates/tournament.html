@@ -25,21 +25,6 @@
       {% endfor %}
     </ul>
     {% endif %}
-    <h2>Add Player</h2>
-      <form action="{{ url_for('tournament_detail', tournament_id=tournament.TournamentId) }}" method="post" class="add-entry">
-        {{ a_form.csrf_token }}
-        <div>{{ a_form.player }} <input type=submit value='Add Player'></div>
-      </form>
-    <h2>Create Player</h2>
-    {% from "_formhelpers.html" import render_field %}
-    <form action="{{ url_for('tournament_detail', tournament_id=tournament.TournamentId) }}" method="post" class="add-entry">
-      {{ c_form.csrf_token }}
-      <dl>
-        {{ render_field(c_form.name) }}
-        {{ render_field(c_form.faction) }}
-        {{ render_field(c_form.group) }}
-      </dl>
-      <p><input type=submit value='Create Player'></p>
-    </form>
+  <a href="{{ url_for('tournament_players', tournament_id=tournament.TournamentId) }}">Add Players</a>
   {% endif %}
 {% endblock %}
