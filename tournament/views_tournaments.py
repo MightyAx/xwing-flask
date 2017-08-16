@@ -2,8 +2,8 @@ from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required
 
 from tournament import app, flask_login
-from tournament.forms import CreateTournament
-from tournament.models import Tournament
+from tournament.forms import CreateTournament, CreatePlayer
+from tournament.models import Tournament, Player
 
 
 @app.route('/tournaments')
@@ -31,8 +31,14 @@ def create_tournament():
     return render_template('tournament.html', form=form)
 
 
-@app.route('/tournament/<tournament_id>')
+@app.route('/tournament/<tournament_id>', methods=['GET', 'POST'])
 def tournament_detail(tournament_id=None):
     if tournament_id:
-        return render_template('tournament.html', tournament=Tournament.get(int(tournament_id)))
+        tournament=Tournament.get(int(tournament_id))
+        form = CreatePlayer(request.form)
+        if form.validate_on_submit():
+            new_player = Player.create(form.name.data, form.faction.data, form.group.data)
+            tournament.add_player(new_player.PlayerId)
+            form = CreatePlayer()
+        return render_template('tournament.html', tournament=tournament, form=form)
     return redirect(url_for('create_tournament'))

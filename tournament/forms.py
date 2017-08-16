@@ -1,7 +1,7 @@
 import datetime
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Regexp, ValidationError
 from tournament.models import User
@@ -48,3 +48,13 @@ class CreateTournament(FlaskForm):
     def validate_date(self, field):
         if field.data < datetime.date.today():
             raise ValidationError('Date must be in the future.')
+
+class CreatePlayer(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    faction = SelectField('Faction',
+                          validators=[DataRequired()],
+                          choices=[('rebel', 'Rebel Alliance'),
+                                   ('empire', 'Galactic Empire'),
+                                   ('scum', 'Scum & Villainy')]
+                          )
+    group = StringField('Group')

@@ -21,5 +21,15 @@
     <h3>Group</h3>
     <h3>Add Players</h3>
     <h3>Create Players</h3>
+    {% from "_formhelpers.html" import render_field %}
+    <form action="{{ url_for('tournament_detail', tournament_id=tournament.TournamentId) }}" method="post" class="add-entry">
+      {{ form.csrf_token }}
+      <dl>
+        {{ render_field(form.name) }}
+        {{ render_field(form.faction) }}
+        {{ render_field(form.group) }}
+      </dl>
+      <p><input type=submit value='Create Player'></p>
+    </form>
   {% endif %}
 {% endblock %}
