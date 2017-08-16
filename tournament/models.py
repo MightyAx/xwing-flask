@@ -74,6 +74,9 @@ class Tournament:
             players.append(Player.get(player_id))
         return players
 
+    def list_groups(self):
+        return r.smembers('tournament:{}:player_groups'.format(self.TournamentId))
+
     def dict_players_by_group(self):
         players = {}
         groups = r.smembers('tournament:{}:player_groups'.format(self.TournamentId))
@@ -114,14 +117,14 @@ class Tournament:
         return tournament
 
     @classmethod
-    def get_all(cls, except_id=None):
+    def get_all(cls, except_admin_id=None):
         score = datetime.date.today() - datetime.timedelta(days=30) - datetime.date(2017, 1, 1)
         min_score = score.days
         max_score = inf
         tournaments = []
         for tournament_id in r.zrangebyscore('tournaments', min_score, max_score):
             potential = Tournament.get(tournament_id)
-            if not except_id or except_id != potential.AdminId:
+            if not except_admin_id or except_admin_id != potential.AdminId:
                 tournaments.append(potential)
         return tournaments
 
@@ -161,4 +164,16 @@ class Player:
                     'faction': player.Faction,
                     'group': player.Group
                 })
+        r.sadd('players', player.PlayerId)
         return player
+
+    @classmethod
+    def list_players(cls, except_tournament_id=None):
+        players = []
+        if except_tournament_id:
+            players_ids = r.sdiff('players', 'tournament:{}:players'.format(except_tournament_id))
+        else:
+            players_ids = r.smembers('players')
+        for player_id in players_ids:
+            players.append(Player.get(player_id))
+        return players

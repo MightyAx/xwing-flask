@@ -10,7 +10,7 @@ from tournament.models import Tournament
 def tournament_list():
     my_list = []
     if flask_login.current_user.is_authenticated:
-        all_list = Tournament.get_all(except_id=flask_login.current_user.UserId)
+        all_list = Tournament.get_all(except_admin_id=flask_login.current_user.UserId)
         my_list = Tournament.get_for_user(flask_login.current_user.UserId)
     else:
         all_list = Tournament.get_all()
