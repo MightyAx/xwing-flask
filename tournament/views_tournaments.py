@@ -36,11 +36,11 @@ def create_tournament():
 def tournament_detail(tournament_id=None):
     if tournament_id:
         tournament = Tournament.get(int(tournament_id))
-        players = tournament.list_players()
+        group_players = tournament.dict_players_by_group()
         return render_template('tournament.html',
                                user=flask_login.current_user,
                                tournament=tournament,
-                               tournament_players=players)
+                               group_players=group_players)
     return redirect(url_for('create_tournament'))
 
 
@@ -58,8 +58,16 @@ def tournament_players(tournament_id=None):
             return redirect(url_for('tournament_detail', tournament_id=tournament.TournamentId))
 
         add_form = AddPlayer(request.form)
-        add_form.player.choices = [(p.PlayerId, p.Name.decode('utf-8')) for p in
-                                   Player.list_players(tournament.TournamentId)]
+        add_form.player.choices = [
+            (
+                p.PlayerId,
+                '{} ({}), {}'.format(
+                    p.Name.decode('utf-8'),
+                    p.Group.decode('utf-8'),
+                    p.Faction.decode('utf-8')
+                )
+            ) for p in Player.list_players(tournament.TournamentId)
+        ]
         if add_form.is_submitted():
             tournament.add_player(int(add_form.player.data))
             flash('{} Added'.format(dict(add_form.player.choices).get(int(add_form.player.data))))

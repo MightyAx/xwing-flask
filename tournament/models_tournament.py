@@ -51,10 +51,10 @@ class Tournament:
             group_keys.append('tournament:{}:player_group:{}'.format(self.TournamentId, group))
             players[group] = self.list_players(group)
         player_ids = r.sdiff(group_keys)
-        players['independent'] = []
+        players['Independent'.encode('utf-8')] = []
         for player_id in player_ids:
             player_id = int(player_id)
-            players['independent'].append(Player.get(player_id))
+            players['Independent'.encode('utf-8')].append(Player.get(player_id))
         return players
 
     @classmethod
