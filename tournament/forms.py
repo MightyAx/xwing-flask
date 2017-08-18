@@ -49,6 +49,7 @@ class CreateTournament(FlaskForm):
         if field.data < datetime.date.today():
             raise ValidationError('Date must be in the future.')
 
+
 class CreatePlayer(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     faction = SelectField('Faction',
@@ -59,6 +60,7 @@ class CreatePlayer(FlaskForm):
                           )
     group = StringField('Group')
     submit = SubmitField('Create Player')
+
 
 class AddPlayer(FlaskForm):
     player = SelectField('Player To Add', coerce=int)
