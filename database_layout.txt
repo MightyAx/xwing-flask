@@ -1,20 +1,48 @@
-incr next_user_id
-	String
+Type:   incr:String
+Key:    next_user_id
 
-users
-	SortedSet [user_id: email]
+Type:   SortedSet
+Key:    users
+Member: [user_id: email]
 
-user:[user_id]
-	Hash {nickname, email, hash}
+Type:   Hash
+Key:    user:[user_id]
+Member: {nickname, email, hash}
 
-incr next_tournament_id
-    String
+Type:   incr:String
+Key:    next_tournament_id
 
-tournaments
-    SortedSet [days-since-2017: tournament_id]
+Type:   SortedSet
+Key:    tournaments
+Member: [days-since-2017: tournament_id]
 
-tournament:[tournament_id]
-    Hash {name, location, admin_id, date}
+Type:   Hash
+Key:    tournament:[tournament_id]
+Member: {name, location, admin_id, date}
 
-user:[user_id]:tournaments
-    SortedSet [days-since-2017: tournament_id]
+Type:   SortedSet
+Key:    user:[user_id]:tournaments
+Member: [days-since-2017: tournament_id]
+
+Type:   incr:String
+Key:    next_player_id
+
+Type:   Hash
+Key:    player:[player_id]
+Member: {name, faction, group}
+
+Type:   Set
+Key:    players
+Member: [player_id]
+
+Type:   SortedSet
+Key:    tournament:[tournament_id]:players
+Member: [score: player_id]
+
+Type:   Set
+Key:    tournament:[tournament_id]:player_groups
+Member: [group_name]
+
+Type:   Set
+Key:    tournament:[tournament_id]:player_group:[group_name]
+Member: [player_id]

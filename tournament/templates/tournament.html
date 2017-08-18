@@ -1,22 +1,33 @@
 {% extends 'base.html' %}
 {% block title %}Tournament: X-Wing Tournament Manager{% endblock %}
 {% block content %}
-  {% if form and not tournament %}
+  {% if not tournament %}
     <h2>Create Tournament</h2>
     {% from "_formhelpers.html" import render_field %}
     <form action="{{ url_for('create_tournament') }}" method="post" class="add-entry">
-      {{ form.csrf_token }}
+      {{ t_form.csrf_token }}
       <dl>
-        {{ render_field(form.name) }}
-        {{ render_field(form.location) }}
-        {{ render_field(form.date) }}
+        {{ render_field(t_form.name) }}
+        {{ render_field(t_form.location) }}
+        {{ render_field(t_form.date) }}
       </dl>
       <p><input type=submit value='Create Tournament'></p>
     </form>
-  {% endif %}
-  {% if tournament %}
-    <h2>{{ tournament.Name.decode('utf-8')}}</h2>
+  {% else %}
+    <h2>{{ tournament.Name.decode('utf-8') }}</h2>
     <div>{{ tournament.Location.decode('utf-8') }}</div>
     <div>{{ tournament.Date.decode('utf-8') }}</div>
+    <h2>Players:</h2>
+    {% for group in group_players.keys() %}
+      <h3>{{ group.decode('utf-8') }}</h3>
+      <ul>
+        {% for player in group_players[group] %}
+          <li><strong>{{ player.Name.decode('utf-8') }}</strong> {{ player.Faction.decode('utf-8') }} {% if user.is_authenticated %}<a href="{{ url_for('remove_player', tournament_id=tournament.TournamentId, player_id=player.PlayerId) }}">remove</a>{% endif %}</li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+    {% if user.is_authenticated %}
+      <a href="{{ url_for('tournament_players', tournament_id=tournament.TournamentId) }}">Add Players</a>
+    {% endif %}
   {% endif %}
 {% endblock %}
