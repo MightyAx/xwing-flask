@@ -70,3 +70,14 @@ def tournament_players(tournament_id=None):
                                create_form=create_form,
                                add_form=add_form)
     return redirect(url_for('create_tournament'))
+
+@app.route('/tournament/<tournament_id>/remove_player/<player_id>', methods=['GET', 'POST'])
+@login_required
+def remove_player(tournament_id=None, player_id=None):
+    if tournament_id and player_id:
+        tournament = Tournament.get(int(tournament_id))
+        player = Player.get(int(player_id))
+        if tournament and player:
+            tournament.remove_player(player_id)
+            flash('Removed {}'.format(player.Name))
+    return redirect(url_for('tournament_detail', tournament_id=tournament_id))

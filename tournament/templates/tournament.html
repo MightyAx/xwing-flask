@@ -21,7 +21,7 @@
     <h2>Players:</h2>
     <ul>
       {% for player in tournament_players %}
-        <li><strong>{{ player.Name.decode('utf-8') }}</strong> {{ player.Faction.decode('utf-8') }}</li>
+        <li><strong>{{ player.Name.decode('utf-8') }}</strong> {{ player.Faction.decode('utf-8') }} <a href="{{ url_for('remove_player', tournament_id=tournament.TournamentId, player_id=player.PlayerId) }}">remove</a></li>
       {% endfor %}
     </ul>
     {% endif %}
