@@ -35,12 +35,17 @@ def create_tournament():
 @app.route('/tournament/<tournament_id>', methods=['GET', 'POST'])
 def tournament_detail(tournament_id=None):
     if tournament_id:
-        tournament=Tournament.get(int(tournament_id))
+        tournament = Tournament.get(int(tournament_id))
         players = tournament.list_players()
-        return render_template('tournament.html', tournament=tournament, tournament_players=players)
+        return render_template('tournament.html',
+                               user=flask_login.current_user,
+                               tournament=tournament,
+                               tournament_players=players)
     return redirect(url_for('create_tournament'))
 
+
 @app.route('/tournament/<tournament_id>/players', methods=['GET', 'POST'])
+@login_required
 def tournament_players(tournament_id=None):
     if tournament_id:
         tournament = Tournament.get(int(tournament_id))
