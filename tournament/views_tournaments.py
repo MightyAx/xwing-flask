@@ -49,6 +49,9 @@ def tournament_detail(tournament_id=None):
 def tournament_players(tournament_id=None):
     if tournament_id:
         tournament = Tournament.get(int(tournament_id))
+        if tournament.AdminId != flask_login.current_user.UserId:
+            flash('Unauthorized')
+            return redirect(url_for('tournament_detail', tournament_id=tournament_id))
         create_form = CreatePlayer(request.form)
         if create_form.validate_on_submit():
             new_player = Player.create(create_form.name.data, create_form.faction.data, create_form.group.data)
@@ -79,13 +82,16 @@ def tournament_players(tournament_id=None):
                                add_form=add_form)
     return redirect(url_for('create_tournament'))
 
+
 @app.route('/tournament/<tournament_id>/remove_player/<player_id>', methods=['GET', 'POST'])
 @login_required
 def remove_player(tournament_id=None, player_id=None):
     if tournament_id and player_id:
         tournament = Tournament.get(int(tournament_id))
         player = Player.get(int(player_id))
-        if tournament and player:
+        if tournament and player and tournament.AdminId == player.PlayerId:
             tournament.remove_player(player_id)
             flash('Removed {}'.format(player.Name))
+        else:
+            flash('Unauthorized')
     return redirect(url_for('tournament_detail', tournament_id=tournament_id))
