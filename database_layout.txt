@@ -47,13 +47,11 @@ Type:   Set
 Key:    tournament:[tournament_id]:player_group:[group_name]
 Member: [player_id]
 
-Type:	Set
-Key:	tournament:[tournament_id]:rounds
-Member:	[round_id]
+Type:   incr:String
+Key:    tournament:[tournament_id]:next_round_id
 
-Type:	Hash
-Key:	tournament:[tournament_id]:round:[round_id]
-Member:	{start, end}
+Type:   incr:String
+Key:    tournament:[tournament_id]:round:[round_id]:next_battle_id
 
 Type:	Set
 Key:	tournament:[tournament_id]:round:[round_id]:battles

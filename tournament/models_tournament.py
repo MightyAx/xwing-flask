@@ -57,6 +57,12 @@ class Tournament:
             players['Independent'.encode('utf-8')].append(Player.get(player_id))
         return players
 
+    def round_count(self):
+        return int(r.get('tournament:{}:next_round_id'.format(self.TournamentId))) - 1
+
+    def round_add(self):
+        r.incr('tournament:{}:next_round_id'.format(self.TournamentId))
+
     @classmethod
     def get(cls, tournament_id):
         tournament_id = int(tournament_id)
