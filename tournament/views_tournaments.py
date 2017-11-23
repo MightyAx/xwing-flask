@@ -36,11 +36,9 @@ def create_tournament():
 def tournament_detail(tournament_id=None):
     if tournament_id:
         tournament = Tournament.get(int(tournament_id))
-        group_players = tournament.dict_players_by_group()
         return render_template('tournament.html',
                                user=flask_login.current_user,
-                               tournament=tournament,
-                               group_players=group_players)
+                               tournament=tournament)
     return redirect(url_for('create_tournament'))
 
 

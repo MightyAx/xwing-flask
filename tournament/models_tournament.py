@@ -40,10 +40,12 @@ class Tournament:
             players.append(Player.get(player_id))
         return players
 
-    def list_groups(self):
+    @property
+    def groups(self):
         return r.smembers('tournament:{}:player_groups'.format(self.TournamentId))
 
-    def dict_players_by_group(self):
+    @property
+    def players_by_groups(self):
         players = {}
         groups = r.smembers('tournament:{}:player_groups'.format(self.TournamentId))
         group_keys = ['tournament:{}:players'.format(self.TournamentId)]
@@ -57,11 +59,9 @@ class Tournament:
             players['Independent'.encode('utf-8')].append(Player.get(player_id))
         return players
 
-    def round_count(self):
-        return int(r.get('tournament:{}:next_round_id'.format(self.TournamentId))) - 1
-
-    def round_add(self):
-        r.incr('tournament:{}:next_round_id'.format(self.TournamentId))
+    @property
+    def rounds(self):
+        return Tournament.round_count(self.TournamentId)
 
     @classmethod
     def get(cls, tournament_id):
@@ -109,3 +109,7 @@ class Tournament:
         for tournament_id in r.zrangebyscore('user:{}:tournaments'.format(admin_id), min_score, max_score):
             tournaments.append(Tournament.get(tournament_id))
         return tournaments
+
+    @classmethod
+    def round_count(cls, tournament_id):
+        return int(r.get('tournament:{}:next_round_id'.format(tournament_id))) - 1

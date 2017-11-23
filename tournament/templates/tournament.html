@@ -18,10 +18,10 @@
     <div>{{ tournament.Location.decode('utf-8') }}</div>
     <div>{{ tournament.Date.decode('utf-8') }}</div>
     <h2>Players:</h2>
-    {% for group in group_players.keys() %}
+    {% for group in tournament.players_by_groups.keys() %}
       <h3>{{ group.decode('utf-8') }}</h3>
       <ul>
-        {% for player in group_players[group] %}
+        {% for player in tournament.players_by_groups[group] %}
           <li><strong>{{ player.Name.decode('utf-8') }}</strong> {{ player.Faction.decode('utf-8') }} {% if user.is_authenticated and tournament.AdminId == user.UserId %}<a href="{{ url_for('remove_player', tournament_id=tournament.TournamentId, player_id=player.PlayerId) }}">remove</a>{% endif %}</li>
         {% endfor %}
       </ul>
