@@ -54,3 +54,14 @@ class Battle:
             }
         )
         r.sadd('tournament:{}:round:{}:battles'.format(battle.TournamentId, battle.RoundId), battle.BattleId)
+
+    @classmethod
+    def list_battles(cls, tournament_id, round_id):
+        battles = []
+        for i in range(1, Battle.count(tournament_id, round_id)):
+            battles.append(Battle.get(tournament_id, round_id, i))
+        return battles
+
+    @classmethod
+    def count(cls, tournament_id, round_id):
+        return int('tournament:{}:round:{}:next_battle_id'.format(tournament_id, round_id)) - 1
