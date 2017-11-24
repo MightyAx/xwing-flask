@@ -37,8 +37,12 @@
           <li><strong>{{ battle.PlayerA }}</strong> V <strong>{{ battle.PlayerB}}</strong></li>
         {% endfor %}
       </ul>
-      <a href="{{ url_for('generate_round', tournament_id=tournament.TournamentId, round_id=rnd) }}">Regenerate Round</a>
+      {% if user.is_authenticated and tournament.AdminId == user.UserId %}
+        <a href="{{ url_for('generate_round', tournament_id=tournament.TournamentId, round_id=rnd) }}">Regenerate Round</a>
+      {% endif %}
     {% endfor %}
-    <a href="{{ url_for('generate_round', tournament_id=tournament.TournamentId, round_id=(tournament.rounds + 1)) }}"><h3>Generate Next Round</h3></a>
+    {% if user.is_authenticated and tournament.AdminId == user.UserId %}
+      <a href="{{ url_for('generate_round', tournament_id=tournament.TournamentId, round_id=(tournament.rounds + 1)) }}"><h3>Generate Next Round</h3></a>
+    {% endif %}
   {% endif %}
 {% endblock %}
