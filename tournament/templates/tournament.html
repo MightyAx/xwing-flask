@@ -29,5 +29,16 @@
     {% if user.is_authenticated and tournament.AdminId == user.UserId %}
       <a href="{{ url_for('tournament_players', tournament_id=tournament.TournamentId) }}">Add Players</a>
     {% endif %}
+    <h2>Rounds</h2>
+    {% for rnd in tournament.battles_by_round.keys() %}
+      <h3>{{ rnd }}</h3>
+      <ul>
+        {% for battle in tournament.battles_by_round[rnd] %}
+          <li><strong>{{ battle.PlayerA }}</strong> V <strong>{{ battle.PlayerB}}</strong></li>
+        {% endfor %}
+      </ul>
+      <a href="{{ url_for('generate_round', tournament_id=tournament.TournamentId, round_id=rnd) }}">Regenerate Round</a>
+    {% endfor %}
+    <a href="{{ url_for('generate_round', tournament_id=tournament.TournamentId, round_id=(tournament.round_count + 1)) }}"><h3>Regenerate Round</h3></a>
   {% endif %}
 {% endblock %}

@@ -93,3 +93,11 @@ def remove_player(tournament_id=None, player_id=None):
         else:
             flash('Unauthorized')
     return redirect(url_for('tournament_detail', tournament_id=tournament_id))
+
+
+@app.route('/tournament/<tournament_id>/generate_round/<round_id>', methods=['GET', 'POST'])
+@login_required
+def generate_round(tournament_id=None, round_id=None):
+    if tournament_id and round_id:
+        flash("Generate Round")
+    return redirect(url_for('tournament_detail', tournament_id=tournament_id))
