@@ -1,6 +1,7 @@
 import datetime
 from math import inf
 
+from models_battle import Battle
 from tournament.models_player import Player
 from tournament import r
 
@@ -62,6 +63,16 @@ class Tournament:
     @property
     def rounds(self):
         return Tournament.round_count(self.TournamentId)
+
+    @property
+    def battles_by_round(self):
+        battles = {}
+        rounds = range(1, self.rounds)
+        for rnd in rounds:
+            battles[rnd] = []
+            for battle in Battle.list_battles(self.TournamentId, rnd):
+                battles[rnd].append(battle)
+        return battles
 
     @classmethod
     def get(cls, tournament_id):
