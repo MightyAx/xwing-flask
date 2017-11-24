@@ -11,5 +11,5 @@ login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
 # noinspection PyPep8
-import tournament.models_user, tournament.models_player, tournament.models_tournament
+import tournament.models_user, tournament.models_player, tournament.models_tournament, tournament.models_battle
 import tournament.views_main, tournament.views_tournaments
