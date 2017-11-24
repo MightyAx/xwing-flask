@@ -1,7 +1,7 @@
 import datetime
 from math import inf
 
-from models_battle import Battle
+from tournament.models_battle import Battle
 from tournament.models_player import Player
 from tournament import r
 
