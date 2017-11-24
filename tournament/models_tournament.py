@@ -97,6 +97,7 @@ class Tournament:
         score = date - datetime.date(2017, 1, 1)
         r.zadd('tournaments', tournament.TournamentId, score.days)
         r.zadd('user:{}:tournaments'.format(tournament.AdminId), tournament.TournamentId, score.days)
+        r.incr('tournament:{}:next_round_id'.format(tournament.TournamentId))
         return tournament
 
     @classmethod

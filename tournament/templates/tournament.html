@@ -39,6 +39,6 @@
       </ul>
       <a href="{{ url_for('generate_round', tournament_id=tournament.TournamentId, round_id=rnd) }}">Regenerate Round</a>
     {% endfor %}
-    <a href="{{ url_for('generate_round', tournament_id=tournament.TournamentId, round_id=(tournament.round_count + 1)) }}"><h3>Regenerate Round</h3></a>
+    <a href="{{ url_for('generate_round', tournament_id=tournament.TournamentId, round_id=(tournament.rounds + 1)) }}"><h3>Generate Next Round</h3></a>
   {% endif %}
 {% endblock %}
