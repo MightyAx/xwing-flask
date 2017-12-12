@@ -18,6 +18,16 @@ class Tournament:
         player_id = int(player_id)
         player = Player.get(player_id)
         r.sadd('tournament:{}:players'.format(self.TournamentId), player.PlayerId)
+        r.hmset('tournament:{}:player:{}'.format(self.TournamentId, player.PlayerId),
+            {
+                'score': 0,
+                'points': 0,
+                'wins': 0,
+                'losses': 0,
+                'byes': 0,
+                'SoS': 0
+            }
+        )
         if player.Group:
             r.sadd('tournament:{}:player_groups'.format(self.TournamentId), player.Group)
             r.sadd('tournament:{}:player_group:{}'.format(self.TournamentId, player.Group), player.PlayerId)
@@ -26,6 +36,7 @@ class Tournament:
         player_id = int(player_id)
         player = Player.get(player_id)
         r.srem('tournament:{}:players'.format(self.TournamentId), player.PlayerId)
+        r.delete('tournament:{}:player:{}'.format(self.TournamentId, player.PlayerId))
         if player.Group:
             r.srem('tournament:{}:player_groups'.format(self.TournamentId), player.Group)
             r.srem('tournament:{}:player_group:{}'.format(self.TournamentId, player.Group), player.PlayerId)

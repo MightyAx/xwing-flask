@@ -60,3 +60,7 @@ Member:	[battle_id]
 Type:	Hash
 Key:	tournament:[tournament_id]:round:[round_id]:battle:[battle_id]
 Member:	{player_a, player_b, winner, winner_mov}
+
+Type:   Hash
+Key:    tournament:[tournament_id]:player:[player_id]
+Member: {score, wins, losses, byes, points, SoS}
