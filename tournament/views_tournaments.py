@@ -98,6 +98,11 @@ def remove_player(tournament_id=None, player_id=None):
 @app.route('/tournament/<tournament_id>/generate_round/<round_id>', methods=['GET', 'POST'])
 @login_required
 def generate_round(tournament_id=None, round_id=None):
+    if not tournament_id:
+        flash("Unknown Tournament ID")
+    if not round_id:
+        flash("Unknown Round ID")
     if tournament_id and round_id:
         flash("Generate Round")
+        
     return redirect(url_for('tournament_detail', tournament_id=tournament_id))
