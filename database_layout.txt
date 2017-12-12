@@ -35,9 +35,9 @@ Type:   Set
 Key:    players
 Member: [player_id]
 
-Type:   SortedSet
+Type:   Set
 Key:    tournament:[tournament_id]:players
-Member: [score: player_id]
+Member: [player_id]
 
 Type:   Set
 Key:    tournament:[tournament_id]:player_groups
