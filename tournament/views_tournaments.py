@@ -103,6 +103,11 @@ def generate_round(tournament_id=None, round_id=None):
     if not round_id:
         flash("Unknown Round ID")
     if tournament_id and round_id:
-        flash("Generate Round")
+        tournament = Tournament.get(int(tournament_id))
+        if round_id <= tournament.rounds():
+            flash("Regenerate Round: {}+".format(round_id))
+        else:
+            flash("Generate Round")
+        tournament.generate_round(round_id)
         
     return redirect(url_for('tournament_detail', tournament_id=tournament_id))
