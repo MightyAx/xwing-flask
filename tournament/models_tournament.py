@@ -1,6 +1,8 @@
 import datetime
-from math import inf
 
+import math
+
+from tournament.models_battle import Battle
 from tournament.models_player import Player
 from tournament import r
 
@@ -17,6 +19,16 @@ class Tournament:
         player_id = int(player_id)
         player = Player.get(player_id)
         r.sadd('tournament:{}:players'.format(self.TournamentId), player.PlayerId)
+        r.hmset('tournament:{}:player:{}'.format(self.TournamentId, player.PlayerId),
+                {
+                    'score': 0,
+                    'points': 0,
+                    'wins': 0,
+                    'losses': 0,
+                    'byes': 0,
+                    'SoS': 0
+                }
+                )
         if player.Group:
             r.sadd('tournament:{}:player_groups'.format(self.TournamentId), player.Group)
             r.sadd('tournament:{}:player_group:{}'.format(self.TournamentId, player.Group), player.PlayerId)
@@ -25,6 +37,7 @@ class Tournament:
         player_id = int(player_id)
         player = Player.get(player_id)
         r.srem('tournament:{}:players'.format(self.TournamentId), player.PlayerId)
+        r.delete('tournament:{}:player:{}'.format(self.TournamentId, player.PlayerId))
         if player.Group:
             r.srem('tournament:{}:player_groups'.format(self.TournamentId), player.Group)
             r.srem('tournament:{}:player_group:{}'.format(self.TournamentId, player.Group), player.PlayerId)
@@ -40,10 +53,16 @@ class Tournament:
             players.append(Player.get(player_id))
         return players
 
-    def list_groups(self):
+    def generate_round(self, round_id=None):
+        # ToDo: Code Goes Here
+        return
+
+    @property
+    def groups(self):
         return r.smembers('tournament:{}:player_groups'.format(self.TournamentId))
 
-    def dict_players_by_group(self):
+    @property
+    def players_by_groups(self):
         players = {}
         groups = r.smembers('tournament:{}:player_groups'.format(self.TournamentId))
         group_keys = ['tournament:{}:players'.format(self.TournamentId)]
@@ -56,6 +75,20 @@ class Tournament:
             player_id = int(player_id)
             players['Independent'.encode('utf-8')].append(Player.get(player_id))
         return players
+
+    @property
+    def rounds(self):
+        return int(r.get('tournament:{}:next_round_id'.format(self.TournamentId))) - 1
+
+    @property
+    def battles_by_round(self):
+        battles = {}
+        rounds = range(1, self.rounds)
+        for rnd in rounds:
+            battles[rnd] = []
+            for battle in Battle.list_battles(self.TournamentId, rnd):
+                battles[rnd].append(battle)
+        return battles
 
     @classmethod
     def get(cls, tournament_id):
@@ -80,6 +113,7 @@ class Tournament:
         score = date - datetime.date(2017, 1, 1)
         r.zadd('tournaments', tournament.TournamentId, score.days)
         r.zadd('user:{}:tournaments'.format(tournament.AdminId), tournament.TournamentId, score.days)
+        r.incr('tournament:{}:next_round_id'.format(tournament.TournamentId))
         return tournament
 
     @classmethod
@@ -98,7 +132,7 @@ class Tournament:
     def get_for_user(cls, admin_id):
         score = datetime.date.today() - datetime.timedelta(days=30) - datetime.date(2017, 1, 1)
         min_score = score.days
-        max_score = inf
+        max_score = math.inf
         tournaments = []
         for tournament_id in r.zrangebyscore('user:{}:tournaments'.format(admin_id), min_score, max_score):
             tournaments.append(Tournament.get(tournament_id))

@@ -35,9 +35,9 @@ Type:   Set
 Key:    players
 Member: [player_id]
 
-Type:   SortedSet
+Type:   Set
 Key:    tournament:[tournament_id]:players
-Member: [score: player_id]
+Member: [player_id]
 
 Type:   Set
 Key:    tournament:[tournament_id]:player_groups
@@ -46,3 +46,21 @@ Member: [group_name]
 Type:   Set
 Key:    tournament:[tournament_id]:player_group:[group_name]
 Member: [player_id]
+
+Type:   incr:String
+Key:    tournament:[tournament_id]:next_round_id
+
+Type:   incr:String
+Key:    tournament:[tournament_id]:round:[round_id]:next_battle_id
+
+Type:	Set
+Key:	tournament:[tournament_id]:round:[round_id]:battles
+Member:	[battle_id]
+
+Type:	Hash
+Key:	tournament:[tournament_id]:round:[round_id]:battle:[battle_id]
+Member:	{player_a, player_b, winner, winner_mov}
+
+Type:   Hash
+Key:    tournament:[tournament_id]:player:[player_id]
+Member: {score, wins, losses, byes, points, SoS}

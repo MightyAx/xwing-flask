@@ -18,16 +18,31 @@
     <div>{{ tournament.Location.decode('utf-8') }}</div>
     <div>{{ tournament.Date.decode('utf-8') }}</div>
     <h2>Players:</h2>
-    {% for group in group_players.keys() %}
+    {% for group in tournament.players_by_groups.keys() %}
       <h3>{{ group.decode('utf-8') }}</h3>
       <ul>
-        {% for player in group_players[group] %}
+        {% for player in tournament.players_by_groups[group] %}
           <li><strong>{{ player.Name.decode('utf-8') }}</strong> {{ player.Faction.decode('utf-8') }} {% if user.is_authenticated and tournament.AdminId == user.UserId %}<a href="{{ url_for('remove_player', tournament_id=tournament.TournamentId, player_id=player.PlayerId) }}">remove</a>{% endif %}</li>
         {% endfor %}
       </ul>
     {% endfor %}
     {% if user.is_authenticated and tournament.AdminId == user.UserId %}
       <a href="{{ url_for('tournament_players', tournament_id=tournament.TournamentId) }}">Add Players</a>
+    {% endif %}
+    <h2>Rounds</h2>
+    {% for rnd in tournament.battles_by_round.keys() %}
+      <h3>{{ rnd }}</h3>
+      <ul>
+        {% for battle in tournament.battles_by_round[rnd] %}
+          <li><strong>{{ battle.PlayerA }}</strong> V <strong>{{ battle.PlayerB}}</strong></li>
+        {% endfor %}
+      </ul>
+      {% if user.is_authenticated and tournament.AdminId == user.UserId %}
+        <a href="{{ url_for('generate_round', tournament_id=tournament.TournamentId, round_id=rnd) }}">Regenerate Round</a>
+      {% endif %}
+    {% endfor %}
+    {% if user.is_authenticated and tournament.AdminId == user.UserId %}
+      <a href="{{ url_for('generate_round', tournament_id=tournament.TournamentId, round_id=(tournament.rounds + 1)) }}"><h3>Generate Next Round</h3></a>
     {% endif %}
   {% endif %}
 {% endblock %}

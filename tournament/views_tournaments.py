@@ -36,11 +36,9 @@ def create_tournament():
 def tournament_detail(tournament_id=None):
     if tournament_id:
         tournament = Tournament.get(int(tournament_id))
-        group_players = tournament.dict_players_by_group()
         return render_template('tournament.html',
                                user=flask_login.current_user,
-                               tournament=tournament,
-                               group_players=group_players)
+                               tournament=tournament)
     return redirect(url_for('create_tournament'))
 
 
@@ -94,4 +92,22 @@ def remove_player(tournament_id=None, player_id=None):
             flash('Removed {}'.format(player.Name))
         else:
             flash('Unauthorized')
+    return redirect(url_for('tournament_detail', tournament_id=tournament_id))
+
+
+@app.route('/tournament/<tournament_id>/generate_round/<round_id>', methods=['GET', 'POST'])
+@login_required
+def generate_round(tournament_id=None, round_id=None):
+    if not tournament_id:
+        flash("Unknown Tournament ID")
+    if not round_id:
+        flash("Unknown Round ID")
+    if tournament_id and round_id:
+        tournament = Tournament.get(int(tournament_id))
+        if round_id <= tournament.rounds():
+            flash("Regenerate Round: {}+".format(round_id))
+        else:
+            flash("Generate Round")
+        tournament.generate_round(round_id)
+        
     return redirect(url_for('tournament_detail', tournament_id=tournament_id))
